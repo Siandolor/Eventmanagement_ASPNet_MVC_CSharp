@@ -131,5 +131,5 @@ Attribution required for redistribution or commercial adaptation.
 
 ---
 
-“Every orbit is a question of balance — between motion and stillness.”  
-— Daniel Fitz, 2024
+> “Every event is a system of decisions — balance them well, and time will follow.”
+> — Daniel Fitz, 2024
