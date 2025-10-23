@@ -1,0 +1,75 @@
+﻿@model Eventmanagement.ViewModels.UserRegistrationAndRoles
+
+@{
+    ViewData["Title"] = "Benutzer anlegen – Privatperson";
+}
+
+<div class="border border-dark-subtle rounded-2 shadow p-4">
+    <div class="card-body">
+        <h2 class="card-title mb-4">@ViewData["Title"]</h2>
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+
+        <form asp-controller="Admin" asp-action="RegisterPerformer" method="post">
+            <input type="hidden" name="SelectedRole" value="Performer" />
+
+            <div class="row mb-3">
+                <div class="col-8">
+                    <label asp-for="Performer.Performer_Name" class="form-label">Vorname:</label>
+                    <input asp-for="Performer.Performer_Name" class="form-control" />
+                </div>
+                <div class="col-4">
+                    <label asp-for="Performer.Performer_DateOfBirth" class="form-label">Geburtsdatum:</label>
+                    <input asp-for="Performer.Performer_DateOfBirth" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-8">
+                    <label asp-for="Performer.Performer_WebSiteURL" class="form-label">Webseite:</label>
+                    <input asp-for="Performer.Performer_WebSiteURL" class="form-control" />
+                </div>
+
+                <div class="col-4">
+                    <label asp-for="Performer.Performer_Management" class="form-label">Management:</label>
+                    <input asp-for="Performer.Performer_Management" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-6">
+                    <label class="form-label">E-Mail:</label>
+                    <input asp-for="SharedEmail" class="form-control"
+                           oninput="document.getElementById('PerformerEmailHidden').value = this.value;
+                    document.getElementById('LogInNameHidden').value = this.value;" />
+
+                    <input asp-for="Performer.Performer_Email" id="PerformerEmailHidden" class="form-control d-none" />
+                    <input asp-for="Performer.Performer_LogIn.LogIn_Name" id="LogInNameHidden" class="form-control d-none" />
+
+                    <span asp-validation-for="SharedEmail" class="text-danger"></span>
+                </div>
+                <div class="col-6">
+                    <label asp-for="Performer.Performer_Phone" class="form-label">Telefon:</label>
+                    <input asp-for="Performer.Performer_Phone" class="form-control" />
+                </div>
+            </div>
+
+            <input asp-for="Performer.Performer_LogIn.LogIn_Name" class="form-control d-none" />
+
+            <div class="row mb-3">
+                <div class="col-6">
+                    <label asp-for="Performer.Performer_LogIn.LogIn_Password" class="form-label">Passwort:</label>
+                    <input asp-for="Performer.Performer_LogIn.LogIn_Password" class="form-control" type="password" />
+                </div>
+                <div class="col-6">
+                    <label class="form-label">Passwort wiederholen:</label>
+                    <input name="ConfirmPassword" class="form-control" value="@Model.ConfirmPassword" type="password" />
+                </div>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Jetzt registrieren</button>
+            </div>
+        </form>
+    </div>
+</div>

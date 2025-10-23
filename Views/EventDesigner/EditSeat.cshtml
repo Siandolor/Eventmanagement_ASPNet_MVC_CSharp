@@ -1,0 +1,174 @@
+﻿@model Eventmanagement.ViewModels.SeatPricingInputModel
+@using System.ComponentModel.DataAnnotations
+@using Eventmanagement.Enums
+
+@{
+    ViewData["Title"] = "Sitzplatz-Preise konfigurieren";
+
+    var blocks = ViewBag.UsedBlocks as Dictionary<string, BlockIdentifier> ?? new();
+    var levels = ViewBag.UsedLevels as Dictionary<string, LevelType> ?? new();
+    var boxes = ViewBag.UsedBoxes as Dictionary<string, BoxIdentifier> ?? new();
+    var rows = ViewBag.UsedRows as List<string> ?? new();
+
+    string GetDisplayName(Enum e)
+    {
+        return e.GetType()
+                .GetField(e.ToString())?
+                .GetCustomAttributes(typeof(DisplayAttribute), false)
+                is DisplayAttribute[] attrs && attrs.Length > 0
+            ? attrs[0].Name ?? e.ToString()
+            : e.ToString();
+    }
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="flex-fill text-center">
+            <h3 class="m-0">@ViewData["Title"] für den Veranstaltungsort: "@ViewBag.LocationName"</h3>
+        </div>
+        <div>
+            <a asp-action="Index" asp-route-organizerId="@ViewBag.OrganizerId" class="btn btn-outline-secondary">Zurück zur Übersicht</a>
+        </div>
+    </div>
+
+    <form asp-action="EditSeat" method="post">
+        <input type="hidden" asp-for="Event_Id" />
+
+        <div class="mb-4 border rounded p-4 bg-white shadow-sm">
+            <h5 class="mb-3">Schritt 0: Bereiche deaktivieren</h5>
+            <p style="font-size: 10px;">Die ausgewählten Bereiche werden vom Event ausgeschlossen und nicht bepreist.</p>
+
+            @if (blocks.Any())
+            {
+                <div class="mb-3">
+                    <label class="form-label">Blöcke deaktivieren</label>
+                    @foreach (var b in blocks.OrderBy(b => b.Key))
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="DisabledBlocks" value="@b.Key" id="block_@b.Key" />
+                            <label class="form-check-label" for="block_@b.Key">Block @b.Key</label>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (levels.Any())
+            {
+                <div class="mb-3">
+                    <label class="form-label">Ebenen deaktivieren</label>
+                    @foreach (var l in levels.OrderBy(l => l.Key))
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="DisabledLevels" value="@l.Key" id="level_@l.Key" />
+                            <label class="form-check-label" for="level_@l.Key">@l.Key</label>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (boxes.Any())
+            {
+                <div class="mb-3">
+                    <label class="form-label">Logen deaktivieren</label>
+                    @foreach (var b in boxes.OrderBy(b => b.Key))
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="DisabledBoxes" value="@b.Key" id="box_@b.Key" />
+                            <label class="form-check-label" for="box_@b.Key">@b.Key</label>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (rows.Any())
+            {
+                <div class="mb-3">
+                    <label class="form-label">Reihen deaktivieren</label>
+                    @foreach (var r in rows.OrderBy(r => r))
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="DisabledRows" value="@r" id="row_@r" />
+                            <label class="form-check-label" for="row_@r">Reihe @r</label>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="mb-4 border rounded p-4 bg-white shadow-sm">
+            <h5 class="mb-3">Schritt 1: Basispreis definieren</h5>
+            <p style="font-size: 10px;">Bitte geben Sie den Basispreis an. Dieser dient als Grundlage für alle Plätze.</p>
+            <input type="number" step="0.01" name="BasePrice" class="form-control" />
+        </div>
+
+        @foreach (var group in blocks.GroupBy(b => b.Value).Where(g => g.Key != BlockIdentifier.Unspecified))
+        {
+            <div class="mb-4 border rounded p-4 bg-white shadow-sm">
+                <h5 class="mb-3">Schritt 2: @GetDisplayName(group.Key)</h5>
+                <p style="font-size: 10px;">Zuschlag für @GetDisplayName(group.Key).</p>
+                @foreach (var item in group.OrderBy(i => i.Key))
+                {
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">@GetDisplayName(group.Key) @item.Key</span>
+                        <input type="number" step="0.01" name="BlockSurcharges[@item.Key]" class="form-control" />
+                    </div>
+                }
+            </div>
+        }
+
+        @foreach (var group in levels.GroupBy(l => l.Value).Where(g => g.Key != LevelType.Unspecified))
+        {
+            <div class="mb-4 border rounded p-4 bg-white shadow-sm">
+                <h5 class="mb-3">Schritt 3: @GetDisplayName(group.Key)</h5>
+                <p style="font-size: 10px;">Zuschlag für @GetDisplayName(group.Key).</p>
+                @foreach (var item in group.OrderBy(i => i.Key))
+                {
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">@GetDisplayName(group.Key): @item.Key</span>
+                        <input type="number" step="0.01" name="LevelSurcharges[@item.Key]" class="form-control" />
+                    </div>
+                }
+            </div>
+        }
+
+        @foreach (var group in boxes.GroupBy(b => b.Value).Where(g => g.Key != BoxIdentifier.Unspecified))
+        {
+            <div class="mb-4 border rounded p-4 bg-white shadow-sm">
+                <h5 class="mb-3">Schritt 4: @GetDisplayName(group.Key)</h5>
+                <p style="font-size: 10px;">Zuschlag für Loge @GetDisplayName(group.Key).</p>
+                @foreach (var item in group.OrderBy(i => i.Key))
+                {
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">@item.Key</span>
+                        <input type="number" step="0.01" name="BoxSurcharges[@item.Key]" class="form-control" />
+                    </div>
+                }
+            </div>
+        }
+
+        @if (rows.Any())
+        {
+            <div class="mb-4 border rounded p-4 bg-white shadow-sm">
+                <h5 class="mb-3">Schritt 5: Auf-/Abschläge je Reihe</h5>
+                <p style="font-size: 10px;">Zuschläge je Reihe</p>
+                @foreach (var row in rows.OrderBy(r => r))
+                {
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">Reihe @row</span>
+                        <input type="number" step="0.01" name="RowSurcharges[@row]" class="form-control" />
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="mb-4">
+            <label class="form-label">Schritt 6: Abschlag für Stehplätze (optional)</label>
+            <p style="font-size: 10px;">Der Betrag für Stehplätze wird vom Basispreis abgezogen (negative Eingaben sind ein Aufschlag)</p>
+            <input type="number" step="0.01" name="StandingDiscount" class="form-control" />
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Preise anwenden</button>
+        </div>
+    </form>
+</div>

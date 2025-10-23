@@ -1,0 +1,58 @@
+﻿@model Eventmanagement.Models.Users.Customer
+
+<h4>@(Model.Customer_FirstName)'s-Profil</h4>
+
+<div class="row align-items-center">
+    <div class="col-3">
+        @{
+            var rawPath = Model.Customer_ProfileImage;
+
+            if (Model.Customer_IsBlocked)
+            {
+                rawPath = "~/images/default_customer_blocked-V1.png";
+            }
+            else if (string.IsNullOrEmpty(rawPath))
+            {
+                rawPath = "~/images/default_customer_active-V1.png";
+            }
+            else
+            {
+                rawPath += "?v=" + DateTime.Now.Ticks;
+            }
+
+            var imagePath = Url.Content(rawPath);
+        }
+        <img src="@imagePath" class="img-thumbnail mt-2 mb-2" style="width: 300px;" />
+    </div>
+
+    <div class="col-9">
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Name</div>
+            <div class="col-8">@Model.Customer_FirstName @Model.Customer_LastName</div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Geburtsdatum</div>
+            <div class="col-8">@Model.Customer_DateOfBirth.ToShortDateString()</div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Registriert am</div>
+            <div class="col-8">@Model.Customer_RegistrationDate</div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Benutzerstatus</div>
+            <div class="col-8">@Model.Customer_IsBlocked</div>
+        </div>
+    </div>
+</div>
+
+<div class="row align-items-center mt-2">
+    <div class="col-12 row d-row mt-1 mb-2">
+        <div class="col-2 fw-bold">Biografie</div>
+        <div class="col-10">
+            @Model.Customer_ProfileBio
+        </div>
+    </div>
+</div>

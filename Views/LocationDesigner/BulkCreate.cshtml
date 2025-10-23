@@ -1,0 +1,145 @@
+﻿@model Eventmanagement.Utilities.SeatUnitBulkCreator
+
+@{
+    ViewData["Title"] = "Mehrere Plätze anlegen";
+
+    var locationId = Model.Location_Id;
+}
+
+<div class="border border-dark-subtle rounded-2 shadow p-4 mt-2">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="flex-fill text-center">
+            <h2 class="m-0">@ViewData["Title"]</h2>
+        </div>
+        <div>
+            <a asp-action="Index" asp-route-locationId="@Model.Location_Id.ToString()" class="btn btn-outline-secondary">
+                Zurück zur Übersicht
+            </a>
+        </div>
+    </div>
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+
+    <form asp-action="BulkCreate" method="post" class="needs-validation" novalidate>
+        <input type="hidden" asp-for="Location_Id" />
+        <div class="row mb-3">
+            <div class="col-4">
+                <label asp-for="BlockType" class="form-label">Blocktyp:</label>
+                <select asp-for="BlockType" class="form-select" asp-items="ViewBag.BlockType"></select>
+            </div>
+            <div class="col-4">
+                <label asp-for="BlockName" class="form-label">Blockbezeichnung:</label>
+                <input asp-for="BlockName" class="form-control" />
+            </div>
+            <div class="col-4">
+                <label asp-for="Block_Position" class="form-label">Block-Position:</label>
+                <select asp-for="Block_Position" class="form-select" asp-items="ViewBag.Block_Position"></select>
+            </div>
+            <div class="col-12">
+                <p class="fst-italic mb-0" style="font-size: 10px;">Für Veranstaltungsorte mit mehreren Räumlichkeiten oder Sportstätten (z.B.:  Kinos, Kongresse, Messen, Stadien)</p>
+                <p class="fst-italic mt-0 pt-0" style="font-size: 10px;">Es kann eine Blockbezeichnung für einen Block vergeben werden, um weiter zu spezifizieren.</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-6">
+                <label asp-for="Level" class="form-label">Ebene:</label>
+                <select asp-for="Level" class="form-select" asp-items="ViewBag.Level"></select>
+            </div>
+            <div class="col-6">
+                <label asp-for="Level_Position" class="form-label">Ebenenposition:</label>
+                <select asp-for="Level_Position" class="form-select" asp-items="ViewBag.Level_Position"></select>
+            </div>
+            <div class="col-12">
+                <p class="fst-italic" style="font-size: 10px;">Für Veranstaltungsorte mit mehreren Ebenen an Besucherpositionen (z.B.: Kinos, Konzerthäuser, Opernhäuser, Theater)</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-6">
+                <label asp-for="Box" class="form-label">Loge:</label>
+                <select asp-for="Box" class="form-select" asp-items="ViewBag.Box"></select>
+            </div>
+            <div class="col-6">
+                <label asp-for="Box_Position" class="form-label">Logenposition:</label>
+                <select asp-for="Box_Position" class="form-select" asp-items="ViewBag.Box_Position"></select>
+            </div>
+            <div class="col-12">
+                <p class="fst-italic" style="font-size: 10px;">Für Veranstaltungsorte mit verschiedenen Logen auf bestimmten Ebenen (z.B.: Konzerthäuser, Opernhäuser, Theater)</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-3">
+                <label asp-for="RowPrefix" class="form-label">Reihenpräfix:</label>
+                <input asp-for="RowPrefix" class="form-control" placeholder="z. B. A oder R" />
+            </div>
+            <div class="col-3">
+                <label asp-for="RowStart" class="form-label">Reihe von:</label>
+                <input asp-for="RowStart" type="number" class="form-control" min="1" />
+            </div>
+            <div class="col-3">
+                <label asp-for="RowEnd" class="form-label">Reihe bis:</label>
+                <input asp-for="RowEnd" type="number" class="form-control" min="1" />
+            </div>
+            <div class="col-3">
+                <label asp-for="Row_Position" class="form-label">Reihenposition:</label>
+                <select asp-for="Row_Position" class="form-select" asp-items="ViewBag.Row_Position"></select>
+            </div>
+            <div class="col-12">
+                <p class="fst-italic" style="font-size: 10px;">Es kann ein Präfix für eine Reihe oder eine Gruppe an Reihen vergeben werden, um weiter zu spezifizieren.</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-3">
+                <label asp-for="SeatStart" class="form-label">Platznummer von:</label>
+                <input asp-for="SeatStart" type="number" class="form-control" min="1" />
+            </div>
+            <div class="col-3">
+                <label asp-for="SeatEnd" class="form-label">Platznummer bis:</label>
+                <input asp-for="SeatEnd" type="number" class="form-control" min="1" />
+            </div>
+            <div class="col-3">
+                <label asp-for="Seat_Position" class="form-label">Platzposition:</label>
+                <select asp-for="Seat_Position" class="form-select" asp-items="ViewBag.Seat_Position"></select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-3 form-check mb-3 ms-5">
+                <input class="form-check-input" asp-for="IsStandingArea" />
+                <label class="form-check-label" asp-for="IsStandingArea">Stehplatz</label>
+            </div>
+        </div>
+
+        <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-success btn-lg">Plätze anlegen</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function (e) {
+            const rowStart = parseInt(document.querySelector('[name="RowStart"]').value);
+            const rowEnd = parseInt(document.querySelector('[name="RowEnd"]').value);
+            const seatStart = parseInt(document.querySelector('[name="SeatStart"]').value);
+            const seatEnd = parseInt(document.querySelector('[name="SeatEnd"]').value);
+
+            if (rowEnd < rowStart) {
+                alert("Reihe bis muss größer oder gleich Reihe von sein.");
+                e.preventDefault();
+            }
+
+            if (seatEnd < seatStart) {
+                alert("Sitznummer bis muss größer oder gleich Sitznummer von sein.");
+                e.preventDefault();
+            }
+        });
+    </script>
+}

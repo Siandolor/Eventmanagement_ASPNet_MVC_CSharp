@@ -1,0 +1,358 @@
+﻿@model List<object>
+@{
+    ViewBag.Title = "User Management";
+    var userType = ViewBag.UserType as string;
+    var size = "100px" as string;
+}
+
+<h1>User Management: @userType</h1>
+
+<form asp-controller="Coworker" asp-action="UserIndexCoworker" method="get" style="margin-bottom: 20px;">
+    <select name="userType" onchange="this.form.submit()" class="form-control" style="width: 300px; display: inline-block;">
+        <option value="">-- Bitte auswählen --</option>
+        <option value="Customer" selected="@(userType == "Customer" ? "selected" : null)">Privatpersonen</option>
+        <option value="InternalCoworker" selected="@(userType == "InternalCoworker" ? "selected" : null)">Mitarbeiter</option>
+        <option value="Location" selected="@(userType == "Location" ? "selected" : null)">Veranstaltungsorte</option>
+        <option value="Moderator" selected="@(userType == "Moderator" ? "selected" : null)">Moderatoren</option>
+        <option value="Organizer" selected="@(userType == "Organizer" ? "selected" : null)">Veranstalter</option>
+        <option value="Performer" selected="@(userType == "Performer" ? "selected" : null)">Künstler</option>
+    </select>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr class="align-content-center">
+                <th>Profilbild</th>
+                <th>Name/Firma</th>
+                <th>Registriert am</th>
+                <th>Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                switch (userType)
+                {
+                    case "Customer":
+                        var customer = item as Eventmanagement.Models.Users.Customer;
+                        var isBlockedCustomer = customer.Customer_IsBlocked;
+
+                        <tr class="align-content-center">
+                            <td class="align-content-center">
+                                @{
+                                    var rawCustomerPath = customer.Customer_ProfileImage;
+
+                                    if (customer.Customer_Role == UserRole.Customer)
+                                    {
+                                        if (customer.Customer_IsBlocked)
+                                        {
+                                            rawCustomerPath = "~/images/default_customer_blocked-V1.png";
+                                        }
+                                        else if (string.IsNullOrEmpty(rawCustomerPath))
+                                        {
+                                            rawCustomerPath = "~/images/default_customer_active-V1.png";
+                                        }
+                                        else
+                                        {
+                                            rawCustomerPath += "?v=" + DateTime.Now.Ticks;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        rawCustomerPath = null;
+                                    }
+                                    var imageCustomerPath = Url.Content(rawCustomerPath);
+                                }
+
+                                <img src="@imageCustomerPath" class="img-thumbnail mt-2 mb-2" style="width: @size;" />
+                            </td>
+                            <td class="align-content-center">@($"{customer.Customer_FirstName} {customer.Customer_LastName}")</td>
+                            <td class="align-content-center">@customer.Customer_RegistrationDate.ToShortDateString()</td>
+                            <td class="align-content-center">
+                                <a asp-controller="Coworker" asp-action="UserDetailsCoworker" asp-route-userType="Customer" asp-route-id="@customer.Customer_Id" class="btn btn-sm mx-2" style="background-color: #9abcde;">Details / Bearbeiten</a> |
+                                <form asp-controller="Coworker" asp-action="ToggleBlock" method="post" style="display:inline;">
+                                    <input type="hidden" name="userType" value="@userType" />
+                                    <input type="hidden" name="id" value="@customer.Customer_Id" />
+                                    <button type="submit" class="btn btn-sm mx-2" 
+                                        style="@(isBlockedCustomer ? "background-color: #abcdef;" : "background-color: #fedcba;")">
+                                        @(isBlockedCustomer ? "Aktivieren" : "Blockieren")
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>;
+                    break;
+
+                    case "InternalCoworker":
+                        var coworker = item as Eventmanagement.Models.Users.InternalCoworker;
+                        var isBlockedCoworker = coworker.InternalCoworker_IsBlocked;
+
+                        <tr class="align-content-center">
+                            <td class="align-content-center">
+                                @{
+                                    var rawCoworkerPath = coworker.InternalCoworker_ProfileImage;
+
+                                    if (coworker.InternalCoworker_Role == UserRole.Admin)
+                                    {
+                                        if (coworker.InternalCoworker_IsBlocked)
+                                        {
+                                            rawCoworkerPath = "~/images/default_admin_blocked-V1.png";
+                                        }
+                                        else if (string.IsNullOrEmpty(rawCoworkerPath))
+                                        {
+                                            rawCoworkerPath = "~/images/default_admin_active-V1.png";
+                                        }
+                                        else
+                                        {
+                                            rawCoworkerPath += "?v=" + DateTime.Now.Ticks;
+                                        }
+                                    }
+                                    else if (coworker.InternalCoworker_Role == UserRole.Coworker)
+                                    {
+                                        if (coworker.InternalCoworker_IsBlocked)
+                                        {
+                                            rawCoworkerPath = "~/images/default_coworker_blocked-V1.png";
+                                        }
+                                        else if (string.IsNullOrEmpty(rawCoworkerPath))
+                                        {
+                                            rawCoworkerPath = "~/images/default_coworker_active-V1.png";
+                                        }
+                                        else
+                                        {
+                                            rawCoworkerPath += "?v=" + DateTime.Now.Ticks;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        rawCoworkerPath = null;
+                                    }
+                                    var imageCoworkerPath = Url.Content(rawCoworkerPath);
+
+                                }
+                                <img src="@imageCoworkerPath" class="img-thumbnail mt-2 mb-2" style="width: @size;" />
+                            </td>
+                            <td class="align-content-center">@($"{coworker.InternalCoworker_FirstName} {coworker.InternalCoworker_LastName}")</td>
+                            <td class="align-content-center">@coworker.InternalCoworker_RegistrationDate.ToShortDateString()</td>
+                            <td class="align-content-center">
+                                <a asp-controller="Coworker" asp-action="UserDetailsCoworker" asp-route-userType="InternalCoworker" asp-route-id="@coworker.InternalCoworker_Id" class="btn btn-sm mx-2" style="background-color: #9abcde;">Details / Bearbeiten</a> |
+                                @if (coworker.InternalCoworker_Role != UserRole.Admin)
+                                {
+                                    <span>|</span>
+                                    <form asp-controller="Coworker" asp-action="ToggleBlock" method="post" style="display:inline;">
+                                        <input type="hidden" name="userType" value="@userType" />
+                                        <input type="hidden" name="id" value="@coworker.InternalCoworker_Id" />
+                                        <button type="submit" class="btn btn-sm mx-2"
+                                                style="background-color: @(isBlockedCoworker ? "#abcdef" : "#fedcba");">
+                                            @(isBlockedCoworker ? "Aktivieren" : "Blockieren")
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>;
+                    break;
+
+                    case "Location":
+                        var location = item as Eventmanagement.Models.Users.Location;
+                        var isBlockedLocation = location.Location_IsBlocked;
+
+                        <tr class="align-content-center">
+                            <td class="align-content-center">
+                                @{
+                                    var rawLocationPath = location.Location_ProfileImage;
+
+                                    if (location.Location_Role == UserRole.Location)
+                                    {
+                                        if (location.Location_IsBlocked)
+                                        {
+                                            rawLocationPath = "~/images/default_location_blocked-V1.png";
+                                        }
+                                        else if (string.IsNullOrEmpty(rawLocationPath))
+                                        {
+                                            rawLocationPath = "~/images/default_location_active-V1.png";
+                                        }
+                                        else
+                                        {
+                                            rawLocationPath += "?v=" + DateTime.Now.Ticks;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        rawLocationPath = null;
+                                    }
+                                    var imageLocationPath = Url.Content(rawLocationPath);
+
+                                }
+                                <img src="@imageLocationPath" class="img-thumbnail mt-2 mb-2" style="width: @size;" />
+                            </td>
+                            <td class="align-content-center">@location.Location_CompanyName</td>
+                            <td class="align-content-center">@location.Location_RegistrationDate.ToShortDateString()</td>
+                            <td class="align-content-center">
+                                <a asp-controller="Coworker" asp-action="UserDetailsCoworker" asp-route-userType="Location" asp-route-id="@location.Location_Id" class="btn btn-sm mx-2" style="background-color: #9abcde;">Details / Bearbeiten</a> |
+                                <form asp-controller="Coworker" asp-action="ToggleBlock" method="post" style="display:inline;">
+                                    <input type="hidden" name="userType" value="@userType" />
+                                    <input type="hidden" name="id" value="@location.Location_Id" />
+                                    <button type="submit" class="btn btn-sm mx-2" 
+                                        style="@(isBlockedLocation ? "background-color: #abcdef;" : "background-color: #fedcba;")">
+                                            @(isBlockedLocation ? "Aktivieren" : "Blockieren")
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>;
+                    break;
+
+                    case "Moderator":
+                        var moderator = item as Eventmanagement.Models.Users.Moderator;
+                        var isBlockedModerator = moderator.Moderator_IsBlocked;
+
+                        <tr class="align-content-center">
+                            <td class="align-content-center">
+                                @{
+                                    var rawModeratorPath = moderator.Moderator_ProfileImage;
+
+                                    if (moderator.Moderator_Role == UserRole.Moderator)
+                                    {
+                                        if (moderator.Moderator_IsBlocked)
+                                        {
+                                            rawModeratorPath = "~/images/default_moderator_blocked-V1.png";
+                                        }
+                                        else if (string.IsNullOrEmpty(rawModeratorPath))
+                                        {
+                                            rawModeratorPath = "~/images/default_moderator_active-V1.png";
+                                        }
+                                        else
+                                        {
+                                            rawModeratorPath += "?v=" + DateTime.Now.Ticks;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        rawModeratorPath = null;
+                                    }
+                                    var imageModeratorPath = Url.Content(rawModeratorPath);
+
+                                }
+                                <img src="@imageModeratorPath" class="img-thumbnail mt-2 mb-2" style="width: @size;" />
+                            </td>
+                            <td class="align-content-center">@($"{moderator.Moderator_FirstName} {moderator.Moderator_LastName}")</td>
+                            <td class="align-content-center">@moderator.Moderator_RegistrationDate.ToShortDateString()</td>
+                            <td class="align-content-center">
+                                <a asp-controller="Coworker" asp-action="UserDetailsCoworker" asp-route-userType="Moderator" asp-route-id="@moderator.Moderator_Id" class="btn btn-sm mx-2" style="background-color: #9abcde;">Details / Bearbeiten</a> |
+                                <form asp-controller="Coworker" asp-action="ToggleBlock" method="post" style="display:inline;">
+                                    <input type="hidden" name="userType" value="@userType" />
+                                    <input type="hidden" name="id" value="@moderator.Moderator_Id" />
+                                    <button type="submit" class="btn btn-sm mx-2"
+                                        style="@(isBlockedModerator ? "background-color: #abcdef;" : "background-color: #fedcba;")">
+                                            @(isBlockedModerator ? "Aktivieren" : "Blockieren")
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>;
+                    break;
+
+                    case "Organizer":
+                        var organizer = item as Eventmanagement.Models.Users.Organizer;
+                        var isBlockedOrganizer = organizer.Organizer_IsBlocked;
+
+                        <tr class="align-content-center">
+                            <td class="align-content-center">
+                                @{
+                                    var rawOrganizerPath = organizer.Organizer_ProfileImage;
+
+                                    if (organizer.Organizer_Role == UserRole.Organizer)
+                                    {
+                                        if (organizer.Organizer_IsBlocked)
+                                        {
+                                            rawOrganizerPath = "~/images/default_organizer_blocked-V1.png";
+                                        }
+                                        else if (string.IsNullOrEmpty(rawOrganizerPath))
+                                        {
+                                            rawOrganizerPath = "~/images/default_organizer_active-V1.png";
+                                        }
+                                        else
+                                        {
+                                            rawOrganizerPath += "?v=" + DateTime.Now.Ticks;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        rawOrganizerPath = null;
+                                    }
+                                    var imageOrganizerPath = Url.Content(rawOrganizerPath);
+
+                                }
+                                <img src="@imageOrganizerPath" class="img-thumbnail mt-2 mb-2" style="width: @size;" />
+                            </td>
+                            <td class="align-content-center">@organizer.Organizer_CompanyName</td>
+                            <td class="align-content-center">@organizer.Organizer_RegistrationDate.ToShortDateString()</td>
+                            <td class="align-content-center">
+                                <a asp-controller="Coworker" asp-action="UserDetailsCoworker" asp-route-userType="Organizer" asp-route-id="@organizer.Organizer_Id" class="btn btn-sm mx-2" style="background-color: #9abcde;">Details / Bearbeiten</a> |
+                                <form asp-controller="Coworker" asp-action="ToggleBlock" method="post" style="display:inline;">
+                                    <input type="hidden" name="userType" value="@userType" />
+                                    <input type="hidden" name="id" value="@organizer.Organizer_Id" />
+                                    <button type="submit" class="btn btn-sm mx-2"
+                                        style="@(isBlockedOrganizer ? "background-color: #abcdef;" : "background-color: #fedcba;")">
+                                            @(isBlockedOrganizer ? "Aktivieren" : "Blockieren")
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>;
+                    break;
+
+                    case "Performer":
+                        var performer = item as Eventmanagement.Models.Users.Performer;
+                        var isBlockedPerformer = performer.Performer_IsBlocked;
+
+                        <tr class="align-content-center">
+                            <td class="align-content-center">
+                                @{
+                                    var rawPerformerPath = performer.Performer_ProfileImage;
+
+                                    if (performer.Performer_Role == UserRole.Performer)
+                                    {
+                                        if (performer.Performer_IsBlocked)
+                                        {
+                                            rawPerformerPath = "~/images/default_performer_blocked-V1.png";
+                                        }
+                                        else if (string.IsNullOrEmpty(rawPerformerPath))
+                                        {
+                                            rawPerformerPath = "~/images/default_performer_active-V1.png";
+                                        }
+                                        else
+                                        {
+                                            rawPerformerPath += "?v=" + DateTime.Now.Ticks;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        rawPerformerPath = null;
+                                    }
+                                    var imagePerformerPath = Url.Content(rawPerformerPath);
+
+                                }
+                                <img src="@imagePerformerPath" class="img-thumbnail mt-2 mb-2" style="width: @size;" />
+                            </td>
+                            <td class="align-content-center">@performer.Performer_Name</td>
+                            <td class="align-content-center">@performer.Performer_RegistrationDate.ToShortDateString()</td>
+                            <td class="align-content-center">
+                                <a asp-controller="Coworker" asp-action="UserDetailsCoworker" asp-route-userType="Performer" asp-route-id="@performer.Performer_Id" class="btn btn-sm mx-2" style="background-color: #9abcde;">Details / Bearbeiten</a> |
+                                <form asp-controller="Coworker" asp-action="ToggleBlock" method="post" style="display:inline;">
+                                    <input type="hidden" name="userType" value="@userType" />
+                                    <input type="hidden" name="id" value="@performer.Performer_Id" />
+                                    <button type="submit" class="btn btn-sm mx-2"
+                                        style="@(isBlockedPerformer ? "background-color: #abcdef;" : "background-color: #fedcba;")">
+                                            @(isBlockedPerformer ? "Aktivieren" : "Blockieren")
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>;
+                    break;
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Bitte wählen Sie einen Benutzer-Typ aus.</p>
+}

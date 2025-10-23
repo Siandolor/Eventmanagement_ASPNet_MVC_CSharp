@@ -1,0 +1,105 @@
+﻿@model Eventmanagement.ViewModels.UserRegistrationAndRoles
+
+@{
+    ViewData["Title"] = "Benutzer anlegen – Firma / Veranstalter";
+}
+
+<div class="border border-dark-subtle rounded-2 shadow p-4">
+    <div class="card-body">
+        <h2 class="card-title mb-4">@ViewData["Title"]</h2>
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+
+        <form asp-controller="Coworker" asp-action="RegisterOrganizer" method="post">
+            <input type="hidden" name="SelectedRole" value="Organizer" />
+
+            <div class="mb-3">
+                <label asp-for="Organizer.Organizer_CompanyName" class="form-label">Firmenname:</label>
+                <input asp-for="Organizer.Organizer_CompanyName" class="form-control" />
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-6">
+                    <label asp-for="Organizer.Organizer_ContactPerson" class="form-label">Ansprechperson:</label>
+                    <input asp-for="Organizer.Organizer_ContactPerson" class="form-control" />
+                </div>
+                <div class="col-6">
+                    <label asp-for="Organizer.Organizer_FIN" class="form-label">Firmenbuchnummer / FIN:</label>
+                    <input asp-for="Organizer.Organizer_FIN" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-12">
+                    <label asp-for="Organizer.Organizer_WebSiteURL" class="form-label">Webseite:</label>
+                    <input asp-for="Organizer.Organizer_WebSiteURL" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-8">
+                    <label asp-for="Organizer.Organizer_StreetName" class="form-label">Straße:</label>
+                    <input asp-for="Organizer.Organizer_StreetName" class="form-control" />
+                </div>
+                <div class="col-2">
+                    <label asp-for="Organizer.Organizer_StreetNumber" class="form-label">Hausnummer:</label>
+                    <input asp-for="Organizer.Organizer_StreetNumber" class="form-control" />
+                </div>
+                <div class="col-2">
+                    <label asp-for="Organizer.Organizer_ApartmentNumber" class="form-label">Tür:</label>
+                    <input asp-for="Organizer.Organizer_ApartmentNumber" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-3">
+                    <label asp-for="Organizer.Organizer_ZIP" class="form-label">PLZ:</label>
+                    <input asp-for="Organizer.Organizer_ZIP" class="form-control" />
+                </div>
+                <div class="col-3">
+                    <label asp-for="Organizer.Organizer_City" class="form-label">Ort:</label>
+                    <input asp-for="Organizer.Organizer_City" class="form-control" />
+                </div>
+                <div class="col-3">
+                    <label asp-for="Organizer.Organizer_State" class="form-label">Bundesland:</label>
+                    <input asp-for="Organizer.Organizer_State" class="form-control" />
+                </div>
+                <div class="col-3">
+                    <label asp-for="Organizer.Organizer_Country" class="form-label">Land:</label>
+                    <input asp-for="Organizer.Organizer_Country" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-6">
+                    <label asp-for="SharedEmail" class="form-label">E-Mail:</label>
+                    <input asp-for="SharedEmail" class="form-control"
+                           oninput="document.getElementById('OrganizerEmailHidden').value = this.value;
+                                    document.getElementById('OrganizerLoginHidden').value = this.value;" />
+                    <input asp-for="Organizer.Organizer_Email" id="OrganizerEmailHidden" class="form-control d-none" />
+                    <input asp-for="Organizer.Organizer_LogIn.LogIn_Name" id="OrganizerLoginHidden" class="form-control d-none" />
+                    <span asp-validation-for="SharedEmail" class="text-danger"></span>
+                </div>
+                <div class="col-6">
+                    <label asp-for="Organizer.Organizer_Phone" class="form-label">Telefon:</label>
+                    <input asp-for="Organizer.Organizer_Phone" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-6">
+                    <label asp-for="Organizer.Organizer_LogIn.LogIn_Password" class="form-label">Passwort:</label>
+                    <input asp-for="Organizer.Organizer_LogIn.LogIn_Password" class="form-control" type="password" />
+                </div>
+                <div class="col-6">
+                    <label asp-for="ConfirmPassword" class="form-label">Passwort wiederholen:</label>
+                    <input asp-for="ConfirmPassword" class="form-control" type="password" />
+                </div>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Jetzt registrieren</button>
+            </div>
+        </form>
+    </div>
+</div>

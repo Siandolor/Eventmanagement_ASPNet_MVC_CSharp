@@ -1,0 +1,96 @@
+﻿@model Eventmanagement.Models.Events.EventBasics
+
+@{
+    ViewData["Title"] = "Veranstaltung bearbeiten";
+    var organizerId = Model.Organizer_Id;
+}
+
+<div class="border border-dark-subtle rounded-2 shadow p-4 mt-2">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="flex-fill text-center">
+            <h2 class="m-0">@ViewData["Title"]</h2>
+        </div>
+        <div>
+            <a asp-action="Index" asp-route-organizerId="@organizerId" class="btn btn-outline-secondary">Zurück zur Übersicht</a>
+        </div>
+    </div>
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+
+    <form asp-action="Edit" class="needs-validation" novalidate>
+        <input type="hidden" asp-for="Event_Id" />
+        <input type="hidden" asp-for="Organizer_Id" />
+
+        <div class="row mb-3">
+            <div class="col-6">
+                <label asp-for="Title" class="form-label">Titel:</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="col-6">
+                <label asp-for="MaxParticipants" class="form-label">Max. Teilnehmerzahl:</label>
+                <input asp-for="MaxParticipants" class="form-control" type="number" />
+                <span asp-validation-for="MaxParticipants" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <label asp-for="Description" class="form-label">Kurzbeschreibung:</label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-4">
+                <label asp-for="Category" class="form-label">Kategorie:</label>
+                <select asp-for="Category" class="form-select" asp-items="ViewBag.Category"></select>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+            <div class="col-4">
+                <label asp-for="Type" class="form-label">Typ:</label>
+                <select asp-for="Type" class="form-select" asp-items="ViewBag.Type"></select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="col-4">
+                <label asp-for="Location_Id" class="form-label">Veranstaltungsort:</label>
+                <select asp-for="Location_Id" class="form-select" asp-items="ViewBag.Location_Id"></select>
+                <span asp-validation-for="Location_Id" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-3">
+                <label asp-for="StartDate" class="form-label">Startdatum:</label>
+                <input asp-for="StartDate" class="form-control" type="date" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="col-3">
+                <label asp-for="StartTime" class="form-label">Startzeit:</label>
+                <input asp-for="StartTime" class="form-control" type="time" />
+                <span asp-validation-for="StartTime" class="text-danger"></span>
+            </div>
+            <div class="col-3">
+                <label asp-for="EndDate" class="form-label">Enddatum:</label>
+                <input asp-for="EndDate" class="form-control" type="date" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+            <div class="col-3">
+                <label asp-for="EndTime" class="form-label">Endzeit:</label>
+                <input asp-for="EndTime" class="form-control" type="time" />
+                <span asp-validation-for="EndTime" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">Änderungen speichern</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

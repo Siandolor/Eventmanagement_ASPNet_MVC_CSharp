@@ -1,0 +1,114 @@
+﻿@model Eventmanagement.Models.Users.Organizer
+
+@{
+    var events = ViewBag.OrganizerEvents as IEnumerable<Eventmanagement.Models.Events.EventBasics>;
+    var organizer = ViewBag.Organizer as Eventmanagement.Models.Users.Organizer;
+}
+
+<h4>Firmenprofil von "@(Model.Organizer_CompanyName)"</h4>
+
+<div class="row align-items-center">
+    <div class="col-3">
+        @{
+            var rawPath = Model.Organizer_ProfileImage;
+
+            if (Model.Organizer_IsBlocked)
+            {
+                rawPath = "~/images/default_organizer_blocked-V1.png";
+            }
+            else if (string.IsNullOrEmpty(rawPath))
+            {
+                rawPath = "~/images/default_organizer_active-V1.png";
+            }
+            else
+            {
+                rawPath += "?v=" + DateTime.Now.Ticks;
+            }
+
+            var imagePath = Url.Content(rawPath);
+        }
+        <img src="@imagePath" class="img-thumbnail mt-2 mb-2" style="width: 300px;" />
+    </div>
+
+    <div class="col-9">
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Firma</div>
+            <div class="col-8">@Model.Organizer_CompanyName</div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Webseite</div>
+            @{
+                var website = Model.Organizer_WebSiteURL;
+                if (!string.IsNullOrEmpty(website) && !website.StartsWith("http"))
+                {
+                    website = "https://" + website;
+                }
+            }
+            <div class="col-8">
+                <div><a href="@website" target="_blank">@website</a></div>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Ansprechperson</div>
+            <div class="col-8">
+                <div>@Model.Organizer_ContactPerson</div>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">FIN</div>
+            <div class="col-8">@Model.Organizer_FIN</div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Adresse</div>
+            <div class="col-8">
+                <div>@Model.Organizer_StreetName @Model.Organizer_StreetNumber @Model.Organizer_ApartmentNumber</div>
+                <div>@Model.Organizer_ZIP @Model.Organizer_City, @Model.Organizer_State</div>
+                <div>@Model.Organizer_Country</div>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Telefon</div>
+            <div class="col-8">
+                <div>@Model.Organizer_Phone</div>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">E-Mail</div>
+            <div class="col-8">
+                <div>@Model.Organizer_Email</div>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Registriert am</div>
+            <div class="col-8">@Model.Organizer_RegistrationDate</div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Benutzerstatus</div>
+            <div class="col-8">@Model.Organizer_IsBlocked</div>
+        </div>
+    </div>
+</div>
+
+<div class="row align-items-center mt-2">
+    <div class="col-12 row d-row mt-1 mb-2">
+        <div class="col-2 fw-bold">Biografie</div>
+        <div class="col-10">
+            @Model.Organizer_ProfileBio
+        </div>
+    </div>
+</div>
+
+@if (events != null && events.Any())
+{
+    <hr />
+    <h4 class="mt-5">Veranstaltungen von "@(Model.Organizer_CompanyName)"</h4>
+    @await Html.PartialAsync("~/Views/Common/_OrganizerEvents.cshtml", events)
+}

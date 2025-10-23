@@ -1,0 +1,117 @@
+﻿@model Eventmanagement.Models.Locations.SeatUnit
+
+@{
+    ViewData["Title"] = "Platz bearbeiten";
+
+    var locationId = Model.Location_Id;
+}
+
+<div class="border border-dark-subtle rounded-2 shadow p-4 mt-2">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="flex-fill text-center">
+            <h2 class="m-0">@ViewData["Title"]</h2>
+        </div>
+        <div>
+            <a asp-action="Index" asp-route-locationId="@locationId" class="btn btn-outline-secondary">Zurück zur Übersicht</a>
+        </div>
+    </div>
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+
+    <form asp-action="Edit" class="needs-validation" novalidate>
+        <input type="hidden" asp-for="SeatUnit_Id" />
+        <input type="hidden" asp-for="Location_Id" />
+
+        <div class="row mb-3">
+            <div class="col-4">
+                <label asp-for="BlockType" class="form-label">Blocktyp:</label>
+                <select asp-for="BlockType" class="form-select" asp-items="ViewBag.BlockType"></select>
+            </div>
+            <div class="col-4">
+                <label asp-for="BlockName" class="form-label">Blockbezeichnung:</label>
+                <input asp-for="BlockName" class="form-control" />
+            </div>
+            <div class="col-4">
+                <label asp-for="Block_Position" class="form-label">Block-Position:</label>
+                <select asp-for="Block_Position" class="form-select" asp-items="ViewBag.Block_Position"></select>
+            </div>
+            <div class="col-12">
+                <p class="fst-italic mb-0" style="font-size: 10px;">Für Veranstaltungsorte mit mehreren Räumlichkeiten oder Sportstätten (z. B.: Kinos, Messen)</p>
+                <p class="fst-italic mt-0 pt-0" style="font-size: 10px;">Es kann eine Blockbezeichnung für einen Block vergeben werden, um weiter zu spezifizieren.</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-6">
+                <label asp-for="Level" class="form-label">Ebene:</label>
+                <select asp-for="Level" class="form-select" asp-items="ViewBag.Level"></select>
+            </div>
+            <div class="col-6">
+                <label asp-for="Level_Position" class="form-label">Ebenenposition:</label>
+                <select asp-for="Level_Position" class="form-select" asp-items="ViewBag.Level_Position"></select>
+            </div>
+            <div class="col-12">
+                <p class="fst-italic" style="font-size: 10px;">Für Veranstaltungsorte mit mehreren Ebenen (z. B.: Theater, Oper)</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-6">
+                <label asp-for="Box" class="form-label">Loge:</label>
+                <select asp-for="Box" class="form-select" asp-items="ViewBag.Box"></select>
+            </div>
+            <div class="col-6">
+                <label asp-for="Box_Position" class="form-label">Logenposition:</label>
+                <select asp-for="Box_Position" class="form-select" asp-items="ViewBag.Box_Position"></select>
+            </div>
+            <div class="col-12">
+                <p class="fst-italic" style="font-size: 10px;">Für Veranstaltungsorte mit verschiedenen Logen auf bestimmten Ebenen</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-6">
+                <label asp-for="Row" class="form-label">Reihenpräfix:</label>
+                <input asp-for="Row" class="form-control" />
+            </div>
+            <div class="col-6">
+                <label asp-for="Row_Position" class="form-label">Reihenposition:</label>
+                <select asp-for="Row_Position" class="form-select" asp-items="ViewBag.Row_Position"></select>
+            </div>
+            <div class="col-12">
+                <p class="fst-italic" style="font-size: 10px;">Ein Präfix kann eine Gruppe an Reihen oder einzelne Reihen beschreiben.</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-6">
+                <label asp-for="SeatNumber" class="form-label">Platznummer:</label>
+                <input asp-for="SeatNumber" class="form-control" />
+            </div>
+            <div class="col-6">
+                <label asp-for="Seat_Position" class="form-label">Platzposition:</label>
+                <select asp-for="Seat_Position" class="form-select" asp-items="ViewBag.Seat_Position"></select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-3 form-check mb-3 ms-5">
+                <input class="form-check-input" asp-for="IsStandingArea" />
+                <label class="form-check-label" asp-for="IsStandingArea">Stehplatz</label>
+            </div>
+        </div>
+
+        <div>
+            <p>@Model.SeatUnit_Id</p>
+        </div>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">Änderungen speichern</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

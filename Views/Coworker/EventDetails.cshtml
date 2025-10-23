@@ -1,0 +1,168 @@
+﻿@model Eventmanagement.Models.Events.EventBasics
+
+@{
+    ViewData["Title"] = "Veranstaltungsdetails";
+
+    string GetEnumDisplayName<T>(T enumVal) where T : Enum
+    {
+        var field = enumVal.GetType().GetField(enumVal.ToString());
+        var attr = field?.GetCustomAttribute<DisplayAttribute>();
+        return attr?.Name ?? enumVal.ToString();
+    }
+}
+
+<div class="border-1 border-dark rounded-4 shadow-sm p-4 mt-4 mx-auto" style="max-width: 900px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="m-0 flex-grow-1 text-center">@ViewData["Title"]</h2>
+        <a asp-action="UserDetailsCoworker" asp-route-userType="Organizer" asp-route-id="@ViewBag.OrganizerLoginId" class="btn btn-outline-secondary ms-auto">
+            Zurück zur Übersicht
+        </a>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label class="fw-semibold text-muted">Titel</label>
+            <div class="fs-5">@Model.Title</div>
+        </div>
+        <div class="col-md-6">
+            <label class="fw-semibold text-muted">Max. Teilnehmerzahl</label>
+            <div class="fs-5">@Model.MaxParticipants</div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12" style="min-height: 100px;">
+            <label class="fw-semibold text-muted">Kurzbeschreibung</label>
+            <div>@Model.Description</div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label class="fw-semibold text-muted">Kategorie</label>
+            <div>@Model.Category</div>
+        </div>
+        <div class="col-md-4">
+            <label class="fw-semibold text-muted">Typ</label>
+            <div>@Model.Type</div>
+        </div>
+        <div class="col-md-4">
+            <label class="fw-semibold text-muted">Veranstaltungsort</label>
+            <div>@Model.Location?.Location_CompanyName</div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label class="fw-semibold text-muted">Start</label>
+            <div>@Model.StartDate.ToShortDateString() @Model.StartTime</div>
+        </div>
+        <div class="col-md-6">
+            <label class="fw-semibold text-muted">Ende</label>
+            <div>@Model.EndDate.ToShortDateString() @Model.EndTime</div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <label class="fw-semibold text-muted">Veröffentlicht</label>
+            <span class="fs-4 ms-2">@Html.Raw(Model.IsPublished ? "<span class='text-success'>&#10004;</span>" : "<span class='text-danger'>&#10008;</span>")</span>
+        </div>
+        <div class="col-md-6">
+            <label class="fw-semibold text-muted">Ticketverkauf offen</label>
+            <span class="fs-4 ms-2">@Html.Raw(Model.TicketSaleOpen ? "<span class='text-success'>&#10004;</span>" : "<span class='text-danger'>&#10008;</span>")</span>
+        </div>
+    </div>
+</div>
+
+<div class="border-1 border-dark rounded-4 shadow-sm p-4 mt-4 mx-auto" style="max-width: 900px;">
+    <h4 class="mb-3">Zugewiesene Sitzplätze</h4>
+    @if (ViewBag.SeatUnits is List<Eventmanagement.Models.Events.EventSeatUnit> seats && seats.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Platz-Nr.</th>
+                        <th>Block</th>
+                        <th>Ebene</th>
+                        <th>Kategorie</th>
+                        <th>Status</th>
+                        <th>Preis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var s in seats
+                                        .OrderBy(s => s.SeatUnit.BlockType)
+                                        .ThenBy(s => s.SeatUnit.BlockName)
+                                        .ThenBy(s => s.SeatUnit.Level)
+                                        .ThenBy(s => s.SeatUnit.Row)
+                                        .ThenBy(s => s.SeatUnit.SeatNumber))
+                    {
+                        <tr>
+                            <td>Reihe: @s.SeatUnit.Row Sitz: @s.SeatUnit.SeatNumber</td>
+                            <td>
+                                @(s.SeatUnit.BlockType == BlockIdentifier.Unspecified ? "" : GetEnumDisplayName(s.SeatUnit.BlockType)) 
+                                @s.SeatUnit.BlockName
+                                @(s.SeatUnit.Block_Position == PositionType.Unspecified || s.SeatUnit.Block_Position == null ? "" : GetEnumDisplayName(s.SeatUnit.Block_Position.GetValueOrDefault()))
+                            </td>
+                            <td>
+                                @(s.SeatUnit.Level == LevelType.Unspecified ? "" : GetEnumDisplayName(s.SeatUnit.Level))
+                                @(s.SeatUnit.Level_Position == PositionType.Unspecified ? "" : GetEnumDisplayName(s.SeatUnit.Level_Position))
+                            </td>
+                            <td>@s.Category</td>
+                            <td>@s.Status</td>
+                            <td>@s.TicketPrice.ToString("C")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">Keine Sitzplätze zugewiesen.</p>
+    }
+</div>
+
+<div class="border-1 border-dark rounded-4 shadow-sm p-4 mt-4 mx-auto" style="max-width: 900px;">
+    <h4 class="mb-3">Sessions</h4>
+    @if (ViewBag.Sessions is List<Eventmanagement.Models.Events.EventSession> sessions && sessions.Any())
+    {
+        <ul class="list-group list-group-flush">
+            @foreach (var s in sessions.OrderBy(s => s.StartDate).ThenBy(s => s.StartTime))
+            {
+                <li class="list-group-item">
+                    <strong>@s.Title</strong><br />
+                    <span class="text-muted">@s.StartDate.ToShortDateString() @s.StartTime – @s.EndDate.ToShortDateString() @s.EndTime</span><br />
+                    <span class="text-muted">@s.Speaker</span><br />
+                    <span>@s.Description</span>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted">Keine Sessions vorhanden.</p>
+    }
+</div>
+
+<div class="border-1 border-dark rounded-4 shadow-sm p-4 mt-4 mx-auto" style="max-width: 900px;">
+    <h4 class="mb-3">Dateianhänge</h4>
+    @if (ViewBag.Attachments is List<Eventmanagement.Models.Events.EventAttachment> attachments && attachments.Any())
+    {
+        <ul class="list-group list-group-flush">
+            @foreach (var a in attachments.OrderByDescending(a => a.UploadedAt))
+            {
+                <li class="list-group-item">
+                    📎 <strong>@a.FileName</strong><br />
+                    <span class="text-muted">@a.MimeType – Hochgeladen am @a.UploadedAt.ToString("g")</span>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted">Keine Dateianhänge vorhanden.</p>
+    }
+</div>

@@ -1,0 +1,53 @@
+﻿@model Eventmanagement.ViewModels.UserRegistrationAndRoles
+
+@{
+    ViewData["Title"] = "Benutzer anlegen";
+    var selectedRole = Model?.SelectedRole ?? "";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-controller="Admin" asp-action="CreateUserAdmin" method="get">
+    <div class="form-group mb-3">
+        <label for="userType">Anzulegen ist:</label>
+        <select id="userType" name="model" class="form-select" onchange="this.form.submit()">
+            <option value="">-- Bitte wählen --</option>
+            <option value="Customer" selected="@(selectedRole == "Customer" ? "selected" : null)">Privatperson</option>
+            <option value="Organizer" selected="@(selectedRole == "Organizer" ? "selected" : null)">Firma / Veranstalter</option>
+            <option value="Location" selected="@(selectedRole == "Location" ? "selected" : null)">Firma / Location</option>
+            <option value="Admin" selected="@(selectedRole == "Admin" ? "selected" : null)">Administrator</option>
+            <option value="Coworker" selected="@(selectedRole == "Coworker" ? "selected" : null)">Mitarbeiter</option>
+            <option value="Moderator" selected="@(selectedRole == "Moderator" ? "selected" : null)">Moderator</option>
+            <option value="Performer" selected="@(selectedRole == "Performer" ? "selected" : null)">Künstler</option>
+        </select>
+    </div>
+</form>
+
+@if (selectedRole == "Customer")
+{
+    <partial name="_CustomerForm" model="Model" />
+}
+else if (selectedRole == "Organizer")
+{
+    <partial name="_OrganizerForm" model="Model" />
+}
+else if (selectedRole == "Location")
+{
+    <partial name="_LocationForm" model="Model" />
+}
+else if (selectedRole == "Admin")
+{
+    <partial name="_AdminForm" model="Model" />
+}
+else if (selectedRole == "Coworker")
+{
+    <partial name="_CoworkerForm" model="Model" />
+}
+else if (selectedRole == "Moderator")
+{
+    <partial name="_ModeratorForm" model="Model" />
+}
+else if (selectedRole == "Performer")
+{
+    <partial name="_PerformerForm" model="Model" />
+}

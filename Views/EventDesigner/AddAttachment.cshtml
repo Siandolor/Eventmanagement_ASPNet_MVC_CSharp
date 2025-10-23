@@ -1,0 +1,28 @@
+﻿@model Eventmanagement.Models.Events.EventAttachment
+@{
+    ViewData["Title"] = "Anhang hochladen";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="flex-fill text-center">
+            <h3 class="m-0">@ViewData["Title"] für den Veranstaltungsort: "@ViewBag.LocationName"</h3>
+        </div>
+        <div>
+            <a asp-action="Index" asp-route-organizerId="@ViewBag.OrganizerId" class="btn btn-outline-secondary">Zurück zur Übersicht</a>
+        </div>
+    </div>
+
+    <form asp-action="AddAttachment" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <input type="hidden" asp-for="Event_Id" />
+
+        <div class="mb-3">
+            <label for="file" class="form-label">Datei auswählen</label>
+            <input type="file" class="form-control" name="file" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Datei hochladen</button>
+    </form>
+</div>

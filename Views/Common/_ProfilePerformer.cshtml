@@ -1,0 +1,93 @@
+﻿@model Eventmanagement.Models.Users.Performer
+
+<h4>@(Model.Performer_Name)'s-Profil</h4>
+
+<div class="row align-items-center">
+    <div class="col-3">
+        @{
+            var rawPath = Model.Performer_ProfileImage;
+
+            if (Model.Performer_IsBlocked)
+            {
+                rawPath = "~/images/default_performer_blocked-V1.png";
+            }
+            else if (string.IsNullOrEmpty(rawPath))
+            {
+                rawPath = "~/images/default_performer_active-V1.png";
+            }
+            else
+            {
+                rawPath += "?v=" + DateTime.Now.Ticks;
+            }
+
+            var imagePath = Url.Content(rawPath);
+        }
+        <img src="@imagePath" class="img-thumbnail mt-2 mb-2" style="width: 300px;" />
+    </div>
+
+    <div class="col-9">
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Name</div>
+            <div class="col-8">@Model.Performer_Name</div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Webseite</div>
+            @{
+                var website = Model.Performer_WebSiteURL;
+                if (!string.IsNullOrEmpty(website) && !website.StartsWith("http"))
+                {
+                    website = "https://" + website;
+                }
+            }
+            <div class="col-8">
+                <div><a href="@website" target="_blank">@website</a></div>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Geburtsdatum/Gründungsdatum</div>
+            <div class="col-8">@Model.Performer_DateOfBirth.ToShortDateString()</div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Management</div>
+            <div class="col-8">
+                <div>@Model.Performer_Management</div>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Telefon (Management)</div>
+            <div class="col-8">
+                <div>@Model.Performer_Phone</div>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">E-Mail</div>
+            <div class="col-8">
+                <div>@Model.Performer_Email</div>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Registriert am</div>
+            <div class="col-8">@Model.Performer_RegistrationDate</div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Benutzerstatus</div>
+            <div class="col-8">@Model.Performer_IsBlocked</div>
+        </div>
+    </div>
+</div>
+
+<div class="row align-items-center mt-2">
+    <div class="col-12 row d-row mt-1 mb-2">
+        <div class="col-2 fw-bold">Biografie</div>
+        <div class="col-10">
+            @Model.Performer_ProfileBio
+        </div>
+    </div>
+</div>

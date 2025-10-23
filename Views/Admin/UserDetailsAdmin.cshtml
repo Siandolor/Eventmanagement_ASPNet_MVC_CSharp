@@ -1,0 +1,54 @@
+﻿@model Eventmanagement.Models.LogIn
+
+@{
+    ViewData["Title"] = "Benutzerdetails (Admin)";
+    var role = (UserRole)ViewData["UserRole"];
+    var events = ViewBag.OrganizerEvents as IEnumerable<Eventmanagement.Models.Events.EventBasics>;
+    ViewBag.Organizer = Model.Organizer;
+}
+
+<div class="d-flex row">
+	<h2 class="col-10">@ViewData["Title"] für @role</h2>
+
+	<div class="col-2 justify-content-end mt-2">
+		@{
+			var userType = ViewData["UserRole"]?.ToString();
+            if (userType == "Admin" || userType == "Coworker")
+            {
+                userType = "InternalCoworker";
+            }
+		}
+		<div class="justify-content-end me-3">
+			<a class="btn btn-sm btn-dark btn-outline-light border-dark" asp-action="UserIndexAdmin" asp-controller="Admin" asp-route-userType="@userType" style="text-decoration: none; width: 100%;">Zurück zur Übersicht</a>
+		</div>
+	</div>
+</div>
+
+
+@switch (role)
+{
+    case UserRole.Customer:
+        @Html.Partial("_ProfileCustomer", Model.Customer)
+        break;
+    case UserRole.Admin:
+        @Html.Partial("_ProfileAdmin", Model.InternalCoworker)
+        break;
+    case UserRole.Coworker:
+        @Html.Partial("_ProfileCoworker", Model.InternalCoworker)
+        break;
+    case UserRole.Organizer:
+        @Html.Partial("_ProfileOrganizer", Model.Organizer)
+        break;
+    case UserRole.Location:
+        @Html.Partial("_ProfileLocation", Model.Location)
+        break;
+    case UserRole.Moderator:
+        @Html.Partial("_ProfileModerator", Model.Moderator)
+        break;
+    case UserRole.Performer:
+        @Html.Partial("_ProfilePerformer", Model.Performer)
+        break;
+    default:
+        <p>Unbekannter Benutzertyp.</p>
+        break;
+}

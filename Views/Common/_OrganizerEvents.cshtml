@@ -1,0 +1,108 @@
+﻿@model IEnumerable<Eventmanagement.Models.Events.EventBasics>
+
+@{
+    ViewData["Title"] = "Veranstaltungsübersicht";
+    var organizer = ViewBag.Organizer as Eventmanagement.Models.Users.Organizer;
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Titel</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Kategorie</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Typ</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Ort</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Teilnehmerzahl</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Start</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Ende</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Veröffentlicht</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Ticketverkauf offen</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Aktionen</h6>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderBy(e => e.StartDate).ThenBy(e => e.StartTime))
+        {
+            <tr>
+                <td style="font-size: 12px;" class="align-content-center">
+                    <div class="border border-info-subtle shadow-sm rounded-2 p-2">
+                        <a asp-action="EventDetails" asp-route-id="@item.Event_Id" class="text-decoration-none fw-bold">@item.Title</a>
+                    </div>
+                </td>
+                <td style="font-size: 12px;" class="align-content-center">
+                    @Html.DisplayFor(m => item.Category)
+                </td>
+                <td style="font-size: 12px;" class="align-content-center">
+                    @Html.DisplayFor(m => item.Type)
+                </td>
+                <td style="font-size: 12px;" class="align-content-center">
+                    @item.Location?.Location_CompanyName
+                </td>
+                <td style="font-size: 12px;" class="align-content-center">
+                    @(item.MaxParticipants > 0 ? item.MaxParticipants.ToString() : "–")
+                </td>
+                <td style="font-size: 12px; width: 70px;" class="align-content-center">
+                    @item.StartDate.ToShortDateString() <br /> @item.StartTime
+                </td>
+                <td style="font-size: 12px; width: 70px;" class="align-content-center">
+                    @item.EndDate.ToShortDateString() <br /> @item.EndTime
+                </td>
+                <td style="font-size: 16px;" class="align-content-center">
+                    <p class="btn btn-sm border-dark text-dark @(item.IsPublished ? "btn-success" : "btn-light btn-secondary-subtle")" style="width: 105px; font-size: 12px;">
+                        @(item.IsPublished ? "Veröffentlicht" : "Unveröffentlicht")
+                    </p>
+                </td>
+                <td style="font-size: 16px;" class="align-content-center">
+                    <p class="btn btn-sm border-dark text-dark @(item.TicketSaleOpen ? "btn-success" : "btn-light btn-secondary-subtle")" style="width: 160px; font-size: 12px;">
+                        @(item.TicketSaleOpen ? "Ticketverkauf offen" : "Ticketverkauf geschlossen")
+                    </p>
+                </td>
+                <td style="font-size: 16px;" class="align-content-center">
+                    <p class="btn btn-sm btn-info btn-outline-light border-dark text-dark" style="width: 105px; font-size: 12px;">
+                        Ticket kaufen
+                    </p>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

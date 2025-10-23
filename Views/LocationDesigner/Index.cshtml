@@ -1,0 +1,119 @@
+﻿@model IEnumerable<Eventmanagement.Models.Locations.SeatUnit>
+
+@{
+    ViewData["Title"] = "Platzübersicht";
+
+    var location = ViewBag.Location as Eventmanagement.Models.Users.Location;
+    var userType = location?.Location_Role;
+}
+
+<h1>@ViewData["Title"] für "@location?.Location_CompanyName"</h1>
+
+<p class="d-flex gap-3">
+    <a asp-action="Create" asp-route-locationId="@location?.Location_Id.ToString()" class="btn btn-outline-primary">Einzelplatz anlegen</a>
+    <a asp-action="BulkCreate" asp-route-locationId="@location?.Location_Id.ToString()" class="btn btn-outline-success">Mehrere Plätze anlegen</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Platz-Id</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Block</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Ebene</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Loge</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Reihe</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Platznummer</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Stehplatz?</h6>
+                </div>
+            </th>
+            <th>
+                <div class="justify-content-center align-content-center">
+                    <h6 style="font-size: 16px;">Auswahlmöglichkeiten</h6>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderBy(i => i.BlockType)
+                                   .ThenBy(i => i.BlockName)
+                                   .ThenBy(i => i.Block_Position)
+                                   .ThenBy(i => i.Level)
+                                   .ThenBy(i => i.Level_Position)
+                                   .ThenBy(i => i.Box_Position)
+                                   .ThenBy(i => i.Box)
+                                   .ThenBy(i => i.Row_Position)
+                                   .ThenBy(i => i.Row)
+                                   .ThenBy(i => i.Seat_Position)
+                                   .ThenBy(i => i.SeatNumber))
+        {
+            <tr>
+                <td style="font-size: 12px;" class="align-content-center">@item.SeatUnit_Id</td>
+
+                <td style="font-size: 12px;" class="align-content-center">
+                    <div class="d-flex flex-column">
+                        @(item.BlockType != BlockIdentifier.Unspecified ? Html.DisplayTextFor(_ => item.BlockType) : "")
+                        @(string.IsNullOrWhiteSpace(item.BlockName) ? "" : item.BlockName)
+                        @(item.Block_Position.HasValue && item.Block_Position != PositionType.Unspecified ? Html.DisplayTextFor(_ => item.Block_Position) : "")
+                    </div>
+                </td>
+
+                <td style="font-size: 12px;" class="align-content-center">
+                    @(item.Level != LevelType.Unspecified ? Html.DisplayTextFor(_ => item.Level) : "")
+                    @(item.Level_Position != PositionType.Unspecified ? Html.DisplayTextFor(_ => item.Level_Position) : "")
+                </td>
+
+                <td style="font-size: 12px;" class="align-content-center">
+                    @(item.Box != BoxIdentifier.Unspecified ? Html.DisplayTextFor(_ => item.Box) : "")
+                    @(item.Box_Position != PositionType.Unspecified ? Html.DisplayTextFor(_ => item.Box_Position) : "")
+                </td>
+
+                <td style="font-size: 12px;" class="align-content-center">
+                    @(string.IsNullOrWhiteSpace(item.Row) || item.Row == "0" ? "" : item.Row)
+                    @(item.Row_Position.HasValue && item.Row_Position != PositionType.Unspecified ? Html.DisplayTextFor(_ => item.Row_Position) : "")
+                </td>
+
+                <td style="font-size: 12px;" class="align-content-center">
+                    @(item.SeatNumber != 0 ? item.SeatNumber.ToString() : "")
+                    @(item.Seat_Position.HasValue && item.Seat_Position != PositionType.Unspecified ? Html.DisplayTextFor(_ => item.Seat_Position) : "")
+                </td>
+
+                <td style="font-size: 16px;" class="align-content-center">@Html.Raw(item.IsStandingArea ? "<span class='text-success'>&#10004;</span>" : "<span class='text-danger'>&#10008;</span>")</td>
+
+                <td>
+                    <a style="font-size: 12px;" class="btn btn-sm btn-warning btn-outline-light border-dark text-dark mx-1 px-2" asp-action="Edit" asp-route-id="@item.SeatUnit_Id">Edit</a> |
+                    <form asp-action="Delete" asp-route-id="@item.SeatUnit_Id" method="post" class="d-inline">
+                        <button style="font-size: 12px;" type="submit" class="btn btn-sm btn-danger btn-outline-dark text-light mx-1 px-2">
+                            Löschen
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

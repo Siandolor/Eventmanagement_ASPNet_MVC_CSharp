@@ -1,0 +1,414 @@
+﻿@model Eventmanagement.Models.Users.Organizer
+
+@{
+    var events = ViewBag.OrganizerEvents as IEnumerable<Eventmanagement.Models.Events.EventBasics>;
+    var organizer = ViewBag.Organizer as Eventmanagement.Models.Users.Organizer;
+}
+
+<h4>Firmenprofil von @(Model.Organizer_CompanyName)</h4>
+<h6><span class="text-danger">ID: </span>@Model.Organizer_Id</h6>
+
+<div class="row align-items-center">
+    <div class="col-3">
+        @{
+            var rawPath = Model.Organizer_ProfileImage;
+
+            if (Model.Organizer_IsBlocked)
+            {
+                rawPath = "~/images/default_organizer_blocked-V1.png";
+            }
+            else if (string.IsNullOrEmpty(rawPath))
+            {
+                rawPath = "~/images/default_organizer_active-V1.png";
+            }
+            else
+            {
+                rawPath += "?v=" + DateTime.Now.Ticks;
+            }
+
+            var imagePath = Url.Content(rawPath);
+        }
+        <img src="@imagePath" class="img-thumbnail mt-2 mb-2" style="width: 300px;" />
+
+        <button class="btn btn-sm btn-dark bg-gradient mt-2" style="width: 300px;" data-bs-toggle="modal" data-bs-target="#imageModal">Bild ändern</button>
+    </div>
+
+    <div class="col-9">
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Firma</div>
+            <div class="col-8">
+                <div>@Model.Organizer_CompanyName</div>
+                <button class="btn btn-sm btn-dark bg-gradient mt-2" style="width: 300px;" data-bs-toggle="modal" data-bs-target="#nameModal">Name ändern</button>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Webseite</div>
+            @{
+                var website = Model.Organizer_WebSiteURL;
+                if (!string.IsNullOrEmpty(website) && !website.StartsWith("http"))
+                {
+                    website = "https://" + website;
+                }
+            }
+            <div class="col-8">
+                <div><a href="@website" target="_blank">@website</a></div>
+                <button class="btn btn-sm btn-dark bg-gradient mt-2" style="width: 300px;" data-bs-toggle="modal" data-bs-target="#websiteModal">Webseite ändern</button>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Ansprechperson</div>
+            <div class="col-8">
+                <div>@Model.Organizer_ContactPerson</div>
+                <button class="btn btn-sm btn-dark bg-gradient mt-2" style="width: 300px;" data-bs-toggle="modal" data-bs-target="#contactPersonModal">Ansprechperson ändern</button>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">FIN</div>
+            <div class="col-8">
+                <div>@Model.Organizer_FIN</div>
+                <button class="btn btn-sm btn-dark bg-gradient mt-2" style="width: 300px;" data-bs-toggle="modal" data-bs-target="#finModal">FIN ändern</button>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Adresse</div>
+            <div class="col-8">
+                <div>@Model.Organizer_StreetName @Model.Organizer_StreetNumber @Model.Organizer_ApartmentNumber</div>
+                <div>@Model.Organizer_ZIP @Model.Organizer_City, @Model.Organizer_State</div>
+                <div>@Model.Organizer_Country</div>
+                <button class="btn btn-sm btn-dark bg-gradient mt-2" data-bs-toggle="modal" data-bs-target="#addressModal" style="width: 300px;">
+                    Adresse ändern
+                </button>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Telefon</div>
+            <div class="col-8">
+                <div>@Model.Organizer_Phone</div>
+                <button class="btn btn-sm btn-dark bg-gradient mt-2" data-bs-toggle="modal" data-bs-target="#phoneModal" style="width: 300px;">
+                    Telefon ändern
+                </button>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">E-Mail</div>
+            <div class="col-8">
+                <div>@Model.Organizer_Email</div>
+                <button class="btn btn-sm btn-dark bg-gradient mt-2" data-bs-toggle="modal" data-bs-target="#emailModal" style="width: 300px;">
+                    E-Mail ändern
+                </button>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Passwort</div>
+            <div class="col-8">
+                <button class="btn btn-sm btn-dark bg-gradient mt-2" data-bs-toggle="modal" data-bs-target="#passwordModal" style="width: 300px;">
+                    Passwort ändern
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row align-items-center mt-2">
+    <div class="col-12 row d-row mt-1 mb-2">
+        <div class="col-2 fw-bold">Registriert am</div>
+        <div class="col-2">@Model.Organizer_RegistrationDate</div>
+
+        <div class="col-2 fw-bold">Benutzerstatus</div>
+        <div class="col-2">@Model.Organizer_IsBlocked</div>
+
+        <div class="col-2 fw-bold">Profilbild</div>
+        <div class="col-2" style="font-size: 10px;">@Model.Organizer_ProfileImage</div>
+    </div>
+
+    <div class="col-12 row d-row mt-1 mb-2">
+        <div class="col-2 fw-bold">Biografie</div>
+        <div class="col-10">
+            @Model.Organizer_ProfileBio
+        </div>
+
+        <button class="btn btn-sm btn-dark bg-gradient mt-2" data-bs-toggle="modal" data-bs-target="#bioModal">
+            Bio anlegen oder ändern
+        </button>
+    </div>
+
+    <div class="col-12 row d-row mt-1 mb-2">
+        <a asp-action="Create" asp-controller="EventDesigner" asp-route-organizerId="@organizer?.Organizer_Id" class="btn btn-sm btn-dark bg-gradient mt-2">
+            Veranstaltung anlegen
+        </a>
+    </div>
+</div>
+
+@if (events != null && events.Any())
+{
+    <hr />
+    <h4 class="mt-5">Veranstaltungen von "@(Model.Organizer_CompanyName)"</h4>
+    @await Html.PartialAsync("~/Views/Coworker/_OrganizerEvents.cshtml", events)
+}
+
+<!-- MODALS -->
+@* Adresse ändern *@
+<div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form asp-action="UpdateUserAdress" method="post">
+                <div class="modal-header" style="background: linear-gradient(-90deg, #abcdef, #fedcba);">
+                    <h5 class="modal-title" id="addressModalLabel">Adresse ändern</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="@Model.Organizer_Id" />
+
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                            <label class="form-label">Straße</label>
+                            <input name="streetName" class="form-control" value="@Model.Organizer_StreetName" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Nr.</label>
+                            <input name="streetNumber" class="form-control" value="@Model.Organizer_StreetNumber" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Top</label>
+                            <input name="apartmentNumber" class="form-control" value="@Model.Organizer_ApartmentNumber" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-md-4">
+                            <label class="form-label">PLZ</label>
+                            <input name="zip" class="form-control" value="@Model.Organizer_ZIP" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Stadt</label>
+                            <input name="city" class="form-control" value="@Model.Organizer_City" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Bundesland</label>
+                            <input name="state" class="form-control" value="@Model.Organizer_State" />
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Land</label>
+                        <input name="country" class="form-control" value="@Model.Organizer_Country" />
+                    </div>
+                </div>
+                <div class="modal-footer" style="background: linear-gradient(90deg, #abcdef, #fedcba);">
+                    <button class="btn btn-sm btn-danger-subtle btn-outline-dark" data-bs-dismiss="modal">Abbrechen</button>
+                    <button class="btn btn-sm btn-primary-subtle btn-outline-light text-dark border-dark" type="submit">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* Ansprechperson ändern *@
+<div class="modal fade" id="contactPersonModal" tabindex="-1" aria-labelledby="contactPersonModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="UpdateUserContactPerson" method="post">
+                <div class="modal-header" style="background: linear-gradient(-90deg, #abcdef, #fedcba);">
+                    <h5 class="modal-title" id="contactPersonModalLabel">Ansprechperson ändern</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="@Model.Organizer_Id" />
+                    <label for="contactPerson" class="form-label">Neue Ansprechperson</label>
+                    <input name="contactPerson" class="form-control" value="@Model.Organizer_ContactPerson" />
+                </div>
+                <div class="modal-footer" style="background: linear-gradient(90deg, #abcdef, #fedcba);">
+                    <button class="btn btn-sm btn-danger-subtle btn-outline-dark" data-bs-dismiss="modal">Abbrechen</button>
+                    <button class="btn btn-sm btn-primary-subtle btn-outline-light text-dark border-dark" type="submit">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* Bild ändern *@
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="UpdateUserImage" method="post" enctype="multipart/form-data">
+                <div class="modal-header" style="background: linear-gradient(-90deg, #abcdef, #fedcba);">
+                    <h5 class="modal-title" id="imageModalLabel">Profilbild ändern</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="@Model.Organizer_Id" />
+                    <input type="file" name="imageFile" class="form-control" />
+                </div>
+                <div class="modal-footer" style="background: linear-gradient(90deg, #abcdef, #fedcba);">
+                    <button class="btn btn-sm btn-danger-subtle btn-outline-dark" data-bs-dismiss="modal">Abbrechen</button>
+                    <button class="btn btn-sm btn-primary-subtle btn-outline-light text-dark border-dark" type="submit">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* Bio *@
+<div class="modal fade" id="bioModal" tabindex="-1" aria-labelledby="bioModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="UpdateUserBio" method="post">
+                <div class="modal-header" style="background: linear-gradient(-90deg, #abcdef, #fedcba);">
+                    <h5 class="modal-title" id="bioModalLabel">Biografie speichern</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="@Model.Organizer_Id" />
+                    <textarea name="bio" class="form-control">@Model.Organizer_ProfileBio</textarea>
+                </div>
+                <div class="modal-footer" style="background: linear-gradient(90deg, #abcdef, #fedcba);">
+                    <button class="btn btn-sm btn-danger-subtle btn-outline-dark" data-bs-dismiss="modal">Abbrechen</button>
+                    <button class="btn btn-sm btn-primary-subtle btn-outline-light text-dark border-dark" type="submit">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* E-Mail *@
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="UpdateUserEmail" method="post">
+                <div class="modal-header" style="background: linear-gradient(-90deg, #abcdef, #fedcba);">
+                    <h5 class="modal-title" id="emailModalLabel">E-Mail ändern</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="@Model.Organizer_Id" />
+                    <input name="email" class="form-control" value="@Model.Organizer_Email" />
+                </div>
+                <div class="modal-footer" style="background: linear-gradient(90deg, #abcdef, #fedcba);">
+                    <button class="btn btn-sm btn-danger-subtle btn-outline-dark" data-bs-dismiss="modal">Abbrechen</button>
+                    <button class="btn btn-sm btn-primary-subtle btn-outline-light text-dark border-dark" type="submit">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* FIN ändern *@
+<div class="modal fade" id="finModal" tabindex="-1" aria-labelledby="finModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="UpdateUserFIN" method="post">
+                <div class="modal-header" style="background: linear-gradient(-90deg, #abcdef, #fedcba);">
+                    <h5 class="modal-title" id="finModalLabel">FIN ändern</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="@Model.Organizer_Id" />
+                    <label for="fin" class="form-label">Neue FIN</label>
+                    <input name="fin" class="form-control" value="@Model.Organizer_FIN" />
+                </div>
+                <div class="modal-footer" style="background: linear-gradient(90deg, #abcdef, #fedcba);">
+                    <button class="btn btn-sm btn-danger-subtle btn-outline-dark" data-bs-dismiss="modal">Abbrechen</button>
+                    <button class="btn btn-sm btn-primary-subtle btn-outline-light text-dark border-dark" type="submit">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* Firmenname ändern *@
+<div class="modal fade" id="nameModal" tabindex="-1" aria-labelledby="nameModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="UpdateUserName" method="post">
+                <div class="modal-header" style="background: linear-gradient(-90deg, #abcdef, #fedcba);">
+                    <h5 class="modal-title" id="nameModalLabel">Firmename ändern</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="@Model.Organizer_Id" />
+                    <label for="name" class="form-label">Neuer Firmename</label>
+                    <input name="name" class="form-control" value="@Model.Organizer_CompanyName" />
+                </div>
+                <div class="modal-footer" style="background: linear-gradient(90deg, #abcdef, #fedcba);">
+                    <button class="btn btn-sm btn-danger-subtle btn-outline-dark" data-bs-dismiss="modal">Abbrechen</button>
+                    <button class="btn btn-sm btn-primary-subtle btn-outline-light text-dark border-dark" type="submit">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* Passwort *@
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="UpdateUserPassword" method="post">
+                <div class="modal-header" style="background: linear-gradient(-90deg, #abcdef, #fedcba);">
+                    <h5 class="modal-title" id="passwordModalLabel">Passwort ändern</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="@Model.Organizer_Id" />
+                    <input name="newPassword" type="password" class="form-control" placeholder="Neues Passwort" />
+                </div>
+                <div class="modal-footer" style="background: linear-gradient(90deg, #abcdef, #fedcba);">
+                    <button class="btn btn-sm btn-danger-subtle btn-outline-dark" data-bs-dismiss="modal">Abbrechen</button>
+                    <button class="btn btn-sm btn-primary-subtle btn-outline-light text-dark border-dark" type="submit">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* Telefon ändern *@
+<div class="modal fade" id="phoneModal" tabindex="-1" aria-labelledby="phoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="UpdateUserPhone" method="post">
+                <div class="modal-header" style="background: linear-gradient(-90deg, #abcdef, #fedcba);">
+                    <h5 class="modal-title" id="phoneModalLabel">Telefonnummer ändern</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="@Model.Organizer_Id" />
+                    <label for="phone" class="form-label">Neue Telefonnummer</label>
+                    <input name="phone" class="form-control" value="@Model.Organizer_Phone" />
+                </div>
+                <div class="modal-footer" style="background: linear-gradient(90deg, #abcdef, #fedcba);">
+                    <button class="btn btn-sm btn-danger-subtle btn-outline-dark" data-bs-dismiss="modal">Abbrechen</button>
+                    <button class="btn btn-sm btn-primary-subtle btn-outline-light text-dark border-dark" type="submit">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* Webseite ändern *@
+<div class="modal fade" id="websiteModal" tabindex="-1" aria-labelledby="websiteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="UpdateUserWebsite" method="post">
+                <div class="modal-header" style="background: linear-gradient(-90deg, #abcdef, #fedcba);">
+                    <h5 class="modal-title" id="websiteModalLabel">Webseite ändern</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="@Model.Organizer_Id" />
+                    <label for="website" class="form-label">Neue Webseite</label>
+                    <input name="website" class="form-control" value="@Model.Organizer_WebSiteURL" />
+                </div>
+                <div class="modal-footer" style="background: linear-gradient(90deg, #abcdef, #fedcba);">
+                    <button class="btn btn-sm btn-danger-subtle btn-outline-dark" data-bs-dismiss="modal">Abbrechen</button>
+                    <button class="btn btn-sm btn-primary-subtle btn-outline-light text-dark border-dark" type="submit">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

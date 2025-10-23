@@ -1,0 +1,72 @@
+﻿@model Eventmanagement.Models.Users.Moderator
+
+<h4>@(Model.Moderator_FirstName) @(Model.Moderator_LastName)'s-Profil</h4>
+
+<div class="row align-items-center">
+    <div class="col-3">
+        @{
+            var rawPath = Model.Moderator_ProfileImage;
+
+            if (Model.Moderator_IsBlocked)
+            {
+                rawPath = "~/images/default_moderator_blocked-V1.png";
+            }
+            else if (string.IsNullOrEmpty(rawPath))
+            {
+                rawPath = "~/images/default_moderator_active-V1.png";
+            }
+            else
+            {
+                rawPath += "?v=" + DateTime.Now.Ticks;
+            }
+
+            var imagePath = Url.Content(rawPath);
+        }
+        <img src="@imagePath" class="img-thumbnail mt-2 mb-2" style="width: 300px;" />
+    </div>
+
+    <div class="col-9">
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Name</div>
+            <div class="col-8">@Model.Moderator_FirstName @Model.Moderator_LastName</div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Webseite</div>
+            @{
+                var website = Model.Moderator_WebSiteURL;
+                if (!string.IsNullOrEmpty(website) && !website.StartsWith("http"))
+                {
+                    website = "https://" + website;
+                }
+            }
+            <div class="col-8">
+                <div><a href="@website" target="_blank">@website</a></div>
+            </div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Geburtsdatum</div>
+            <div class="col-8">@Model.Moderator_DateOfBirth.ToShortDateString()</div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Registriert am</div>
+            <div class="col-8">@Model.Moderator_RegistrationDate</div>
+        </div>
+
+        <div class="col-12 row mt-1 mb-2">
+            <div class="col-4 fw-bold">Benutzerstatus</div>
+            <div class="col-8">@Model.Moderator_IsBlocked</div>
+        </div>
+    </div>
+</div>
+
+<div class="row align-items-center mt-2">
+    <div class="col-12 row d-row mt-1 mb-2">
+        <div class="col-2 fw-bold">Biografie</div>
+        <div class="col-10">
+            @Model.Moderator_ProfileBio
+        </div>
+    </div>
+</div>
