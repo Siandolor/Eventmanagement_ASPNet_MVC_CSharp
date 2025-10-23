@@ -1,0 +1,78 @@
+﻿.branding-box {
+    width: 22.5rem;
+    height: 5rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    padding: 0rem 2rem 0rem 2rem;
+    text-align: center;
+    align-content: center;
+    background-color: #abcdef;
+    border: 1px solid #fedcba;
+    border-radius: 2.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out;
+}
+
+    .branding-box:hover {
+        background-color: #fedcba;
+        border: 1px solid #abcdef;
+        transform: scale(1.025);
+    }
+
+    .branding-box:active {
+        transform: scale(0.98);
+    }
+
+.branding-link {
+    font-weight: 700;
+    font-size: 2rem;
+    color: #1a1a1a;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+    .branding-link:hover {
+        color: #1f1f1f;
+    }
+
+    .branding-link:active {
+        transform: scale(0.98);
+    }
+
+.button-menu {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    border-radius: 0.75rem;
+    background-color: transparent;
+}
+
+.button-menu-link {
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0rem;
+    padding: 0rem;
+    border-radius: 0.75rem;
+    border: 1px solid #fedcba;
+    background-color: #abcdef;
+    transition: background-color 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out;
+}
+
+    .button-menu-link:hover {
+        font-weight: 700;
+        border: 1px solid #abcdef;
+        background-color: #fedcba;
+        transform: scale(1.05);
+    }
+
+    .button-menu-link:active {
+        transform: scale(0.98);
+    }

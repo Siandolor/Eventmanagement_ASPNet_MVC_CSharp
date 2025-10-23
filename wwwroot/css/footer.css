@@ -1,0 +1,54 @@
+﻿.app-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(90deg, #abcdef, #fedcba);
+    pointer-events: none;
+    border-top: 1px solid #dee2e6;
+    z-index: 1000;
+}
+
+.footer-container {
+    pointer-events: auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+}
+
+.footer-text {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #1a1a1a;
+}
+
+.footer-text-copyright {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #765432;
+}
+
+.footer-text-span {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 100;
+    color: #1a1a1a;
+    opacity: 0.5;
+}
+
+.footer-button {
+    text-decoration: none;
+    font-weight: 500;
+    color: #654321;
+    margin-left: 0.25rem;
+    transition: color 0.2s ease;
+}
+
+    .footer-button:hover {
+        color: #123456;
+        text-decoration: underline;
+    }
