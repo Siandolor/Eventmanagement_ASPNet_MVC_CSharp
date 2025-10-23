@@ -1,0 +1,19 @@
+﻿<nav style="height: 75px;" class="navbar-menu navbar navbar-expand-lg border-bottom rounded-5 shadow-sm px-5">
+    <div class="container-fluid align-items-start">
+
+        <ul class="button-menu navbar-nav mx-3">
+            <li class="button-menu-link nav-item mx-1 px-2 pt-1 pb-1">
+                @Html.ActionLink("Benutzerprofil", "Profile", "UserProfiles", null, new { @class = "nav-link" })
+            </li>
+        </ul>
+
+        <ul class="button-menu navbar-nav mx-3">
+            <li class="button-menu-link nav-item mx-1 px-2 pt-1 pb-1">
+                @Html.ActionLink("Benutzerübersicht", "UserIndexCommon", "Common", null, new { @class = "nav-link" })
+            </li>
+            <li class="button-menu-link nav-item mx-1 px-2 pt-1 pb-1">
+                @Html.ActionLink("LocationDesigner", "Index", "LocationDesigner", null, new { @class = "nav-link" })
+            </li>
+        </ul>
+    </div>
+</nav>

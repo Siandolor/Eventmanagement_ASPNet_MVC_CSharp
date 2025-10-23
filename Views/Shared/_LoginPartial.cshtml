@@ -1,0 +1,133 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var isLoggedIn = HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
+    var username = HttpContextAccessor.HttpContext.User.Identity.Name;
+    var loginError = TempData["LoginError"] as string;
+    var loginSuccess = TempData["LoginSuccess"] as string;
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 d-flex justify-content-end align-items-center gap-2 py-1">
+            @if (!isLoggedIn)
+            {
+                <form asp-controller="Login" asp-action="Login" method="post" class="d-flex flex-row align-items-center gap-2">
+                    @Html.AntiForgeryToken()
+                    <div class="d-flex align-content-center align-items-center">
+                        <input type="text" name="username" class="field-login" placeholder="E-Mail" required />
+
+                        <input type="password" name="password" class="field-login" placeholder="Passwort" required />
+
+                        <div class="form-check d-flex align-items-center m-0">
+                            <input type="checkbox" name="rememberMe" class="hook-login" />
+                            <label style="min-width: 150px; max-width: 150px;" class="form-check-label small ms-1">Angemeldet bleiben</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="button-login">Login</button>
+                </form>
+
+                <a asp-controller="Registration" asp-action="Register" class="button-register">Registrieren</a>
+            }
+            else
+            {
+                <span class="login-status">Angemeldet als: <strong class="login-status-name">@username</strong></span>
+
+                <form asp-controller="Login" asp-action="Logout" method="post" class="d-inline">
+                    <button type="submit" class="button-logout">
+                        Logout
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- MODALS -->
+@* Ungültiger Login-Name, Ungültiges Passwort, gesperrter Benutzer *@
+<div class="modal fade login-modal" id="loginErrorModal" tabindex="-1" aria-labelledby="loginErrorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header login-modal-header-error">
+                <h5 class="modal-title" id="loginErrorModalLabel">Login-Fehler</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+            </div>
+            <div class="modal-body-error">
+                @if (loginError == "EmailNotFound")
+                {
+                    <p class="modal-body-text-error">Benutzername existiert nicht. <a class="modal-body-link-error" asp-controller="Registration" asp-action="Register">Registrieren?</a></p>
+                }
+                else if (loginError == "InvalidPassword")
+                {
+                    <p class="modal-body-text-error">Passwort ist ungültig!</p>
+                    <a class="modal-body-link-error" asp-controller="Login" asp-action="ResetPassword" class="text-light text-decoration-none">Passwort vergessen oder zurücksetzen?</a>
+                }
+                else if (loginError == "UserBlocked")
+                {
+                    <p class="modal-body-text-error">Benutzerkonto ist gesperrt.</p>
+                }
+            </div>
+            <div class="modal-footer login-modal-footer-error">
+                <button type="button" class="button-close" data-bs-dismiss="modal">Schließen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Erfolgreicher Reset des Passworts *@
+<div class="modal fade login-modal" id="loginSuccessModal" tabindex="-1" aria-labelledby="loginSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header login-modal-header-success">
+                <h5 class="modal-title" id="loginSuccessModalLabel">Aktion erfolgreich</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+            </div>
+            <div class="modal-body-success">
+                @if (loginSuccess == "PasswordResetSuccess")
+                {
+                    <div class="flex-column justify-content-center text-center">
+                        <p class="col-12 modal-body-text-success">Ihr Passwort wurde erfolgreich geändert.</p>
+                        <p class="col-12 modal-body-text-success">Sie können sich jetzt neu einloggen!</p>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer login-modal-footer-success">
+                <button type="button" class="btn btn-sm btn-success-subtle btn-outline-dark" data-bs-dismiss="modal">Schließen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        ['loginErrorModal', 'loginSuccessModal'].forEach(function (id) {
+            var modalElement = document.getElementById(id);
+            if (modalElement) {
+                document.body.appendChild(modalElement);
+            }
+        });
+    });
+</script>
+
+@if (!string.IsNullOrEmpty(loginError))
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var modalElement = document.getElementById('loginErrorModal');
+            var modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        });
+    </script>
+}
+
+@if (!string.IsNullOrEmpty(loginSuccess))
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var modalElement = document.getElementById('loginSuccessModal');
+            var modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        });
+    </script>
+}

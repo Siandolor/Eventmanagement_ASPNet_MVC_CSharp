@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Eventmanagement</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/css/menu.css" />
+    <link rel="stylesheet" href="~/css/login.css" />
+    <link rel="stylesheet" href="~/css/menu.css" />
+    <link rel="stylesheet" href="~/css/footer.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body>
+    <header id="header" class="border-bottom shadow-sm" style="background: linear-gradient(-90deg, #abcdef, #fedcba); position: fixed; top: 0; width: 100%; pointer-events: none;">
+        <nav class="container-fluid" style="pointer-events: auto;">
+            <div class="d-flex justify-content-start align-items-center py-2">
+                <div class="branding-box">
+                    <a class="branding-link" asp-controller="Home" asp-action="Index">Eventmanagement</a>
+                </div>
+
+                <div class="d-flex mx-2">
+                    @using Eventmanagement.Enums
+                    @{
+                        var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+                    }
+
+                    @if (role == UserRole.Performer.ToString())
+                    {
+                        @Html.Partial("_MenuPerformer")
+                    }
+                    else if (role == UserRole.Moderator.ToString())
+                    {
+                        @Html.Partial("_MenuModerator")
+                    }
+                    else if (role == UserRole.Location.ToString())
+                    {
+                        @Html.Partial("_MenuLocation")
+                    }
+                    else if (role == UserRole.Organizer.ToString())
+                    {
+                        @Html.Partial("_MenuOrganizer")
+                    }
+                    else if (role == UserRole.Coworker.ToString())
+                    {
+                        @Html.Partial("_MenuCoworker")
+                    }
+                    else if (role == UserRole.Admin.ToString())
+                    {
+                        @Html.Partial("_MenuAdmin")
+                    }
+                    else if (role == UserRole.Customer.ToString())
+                    {
+                        @Html.Partial("_MenuCustomer")
+                    }
+                    else
+                    {
+                        @Html.Partial("_MenuNotLoggedIn")
+                    }
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end pb-2">
+                @await Html.PartialAsync("_LoginPartial")
+            </div>
+        </nav>
+    </header>
+
+    <div id="main" class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer id="footer" class="app-footer">
+        <div class="footer-container">
+            <p class="footer-text">
+                <span class="footer-text-copyright">&copy; 2025</span> <span class="footer-text-span">–</span> Eventmanagement by Daniel Fitz <span class="footer-text-span">–</span>
+                <a class="footer-button" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        function adjustMainPadding() {
+            var header = document.getElementById('header');
+            var footer = document.getElementById('footer');
+            var main = document.getElementById('main');
+
+            console.log(header);
+            console.log(main);
+            console.log(footer);
+
+            if (header && footer && main) {
+                window.requestAnimationFrame(function() {
+                    var headerHeight = header.offsetHeight;
+                    var footerHeight = footer.offsetHeight;
+                    main.style.paddingTop = headerHeight + 'px';
+                    main.style.paddingBottom = footerHeight + 'px';
+                });
+            }
+        }
+
+        window.addEventListener('load', adjustMainPadding);
+        window.addEventListener('resize', adjustMainPadding);
+
+        var observer = new MutationObserver(function(mutationsList, observer) {
+            adjustMainPadding();
+        });
+
+        var headerElement = document.getElementById('header');
+        if (headerElement) {
+            observer.observe(headerElement, {
+                attributes: true,
+                childList: true,
+                subtree: true
+            });
+        }
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

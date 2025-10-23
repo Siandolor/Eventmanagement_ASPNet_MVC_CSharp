@@ -1,0 +1,36 @@
+﻿@model Eventmanagement.Models.LogIn
+
+@{
+    ViewData["Title"] = "Benutzerprofil";
+    var role = (UserRole)ViewData["UserRole"];
+}
+
+<h2>@ViewData["Title"] für @role</h2>
+
+@switch (role)
+{
+    case UserRole.Customer:
+        @Html.Partial("_ProfileCustomer", Model.Customer)
+        break;
+    case UserRole.Admin:
+        @Html.Partial("_ProfileAdmin", Model.InternalCoworker)
+        break;
+    case UserRole.Coworker:
+        @Html.Partial("_ProfileCoworker", Model.InternalCoworker)
+        break;
+    case UserRole.Organizer:
+        @Html.Partial("_ProfileOrganizer", Model.Organizer)
+        break;
+    case UserRole.Location:
+        @Html.Partial("_ProfileLocation", Model.Location)
+        break;
+    case UserRole.Moderator:
+        @Html.Partial("_ProfileModerator", Model.Moderator)
+        break;
+    case UserRole.Performer:
+        @Html.Partial("_ProfilePerformer", Model.Performer)
+        break;
+    default:
+        <p>Unbekannter Benutzertyp.</p>
+        break;
+}

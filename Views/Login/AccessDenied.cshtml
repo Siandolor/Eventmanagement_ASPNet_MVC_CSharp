@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Zugriff verweigert";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-5">
+                    <h1 class="display-4 text-danger mb-4 fw-bold"><i class="bi bi-shield-lock-fill"></i> Zugriff verweigert</h1>
+
+                    <p class="lead">Sie haben keine Berechtigung, diese Seite aufzurufen.</p>
+                    
+                    <p class="text-muted">Falls Sie glauben, dass dies ein Fehler ist, kontaktieren Sie bitte einen Administrator.</p>
+
+                    <br />
+
+                    <p class=" text-muted">Wenn Sie noch nicht registriert sind, können Sie sich hier <a asp-controller="Registration" asp-action="Register" class="btn btn-sm btn-light btn-outline-dark mx-2">Registrieren</a></p>
+                    
+                    <a href="~/Home/Index" class="btn btn-danger btn-outline-light border-danger mt-3">Zurück zur Startseite</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

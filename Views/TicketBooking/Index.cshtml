@@ -1,0 +1,161 @@
+﻿@model IEnumerable<Eventmanagement.Models.Tickets.Ticket>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TicketNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Event)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Session)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SeatUnit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Currency)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReservationExpiresAtUtc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAtUtc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaidAtUtc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CancelledAtUtc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CheckedInAtUtc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HolderFirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HolderLastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HolderEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HolderPhone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CodePayload)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Order_Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentProvider)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentReference)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RowVersion)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TicketNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Event.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Session.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SeatUnit.EventSeatUnit_Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Currency)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReservationExpiresAtUtc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAtUtc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaidAtUtc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CancelledAtUtc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CheckedInAtUtc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HolderFirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HolderLastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HolderEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HolderPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CodePayload)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Order_Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentProvider)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentReference)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RowVersion)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Ticket_Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Ticket_Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Ticket_Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

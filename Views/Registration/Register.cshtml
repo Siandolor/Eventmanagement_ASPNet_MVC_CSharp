@@ -1,0 +1,33 @@
+﻿@model Eventmanagement.ViewModels.UserRegistrationAndRoles
+
+@{
+    ViewData["Title"] = "Registrierung";
+    var selectedRole = Model?.SelectedRole ?? "";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-controller="Registration" asp-action="Register" method="get">
+    <div class="form-group mb-3">
+        <label for="userType">Ich bin:</label>
+        <select id="userType" name="model" class="form-select" onchange="this.form.submit()">
+            <option value="">-- Bitte wählen --</option>
+            <option value="Customer" selected="@(selectedRole == "Customer" ? "selected" : null)">Privatperson</option>
+            <option value="Organizer" selected="@(selectedRole == "Organizer" ? "selected" : null)">Firma / Veranstalter</option>
+            <option value="Location" selected="@(selectedRole == "Location" ? "selected" : null)">Firma / Location</option>
+        </select>
+    </div>
+</form>
+
+@if (selectedRole == "Customer")
+{
+    <partial name="_CustomerForm" model="Model" />
+}
+else if (selectedRole == "Organizer")
+{
+    <partial name="_OrganizerForm" model="Model" />
+}
+else if (selectedRole == "Location")
+{
+    <partial name="_LocationForm" model="Model" />
+}
